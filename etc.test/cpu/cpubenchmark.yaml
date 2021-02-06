@@ -1,0 +1,47 @@
+# https://www.cpubenchmark.net/
+
+"Intel Core i5-4210U @ 1.70GHz":
+  average-cpu-mark: 2270
+  cores: 2
+  threads: 4
+
+"Intel® Core™ i5 CPU 760 @ 2.80GHz × 4":
+  average-cpu-mark: 2569
+  cores: 4
+  threads: 4
+
+"AMD Ryzen 7 3700X":
+  average-cpu-mark: 22823
+  cores: 8
+  threads: 16
+
+"AMD Ryzen 9 3900X":
+  average-cpu-mark: 32863
+  cores: 12
+  threads: 24
+
+"AMD Epyc 7352":
+  average-cpu-mark: 29860
+  cores: 24
+  threads: 48
+
+"AMD Epyc 7351":
+  average-cpu-mark: 23566
+  cores: 16
+  threads: 32
+
+
+"AMD EPYC 7281":
+  average-cpu-mark: 21230
+  cores: 16
+  threads: 32
+
+"AMD EPYC 7742":
+  average-cpu-mark: 67185
+  cores: 64
+  threads: 128
+
+"AMD EPYC 7702":
+  average-cpu-mark: 71859
+  cores: 64
+  threads: 128
