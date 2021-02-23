@@ -8,15 +8,33 @@ import (
   "gopkg.in/yaml.v2"
 )
 
+// TypeOfData.
+type TypeOfData uint64
+
+const (
+  TABLE TypeOfData = iota
+  VIEW
+  PARAMETER
+)
+
+var typesOfData = map[string]TypeOfData{
+  "table":        TABLE,
+  "view":         VIEW,
+  "parameter":    PARAMETER,
+}
+
 type Property struct {
-  CODE         string    `db:"code"           json:"code"            yaml:"code"`
-  Name         string    `db:"name"           json:"name"            yaml:"name"`
-  Type         string    `db:"type"           json:"type"            yaml:"type"`
+  CODE         string     `db:"code"           json:"code"            yaml:"code"`
+  Name         string     `db:"name"           json:"name"            yaml:"name"`
+  GlobalName   string     `db:"global_name"    json:"global_name"     yaml:"global_name"`
+  Type         string     `db:"type"           json:"type"            yaml:"type"`
 }
 
 type Data struct {
   CODE         string     `db:"code"           json:"code"            yaml:"code"`
+  Type         string     `db:"type"           json:"type"            yaml:"type"`
   Name         string     `db:"name"           json:"name"            yaml:"name"`
+  GlobalName   string     `db:"global_name"    json:"global_name"     yaml:"global_name"`
   Count        uint64     `db:"count"          json:"count"           yaml:"count"`
   Props      []Property   `db:"properties"     json:"properties"      yaml:"properties"`
 }

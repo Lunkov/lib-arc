@@ -24,6 +24,7 @@ type Service struct {
   Disabled     bool                     `db:"disabled"       json:"disabled,omitempty"        yaml:"disabled"`
   Interfaces   map[string]Interface     `db:"interfaces"     json:"interfaces,omitempty"      yaml:"interfaces"   gorm:"column:interfaces;type:jsonb;"`
   Algorithms   map[string]Algorithm     `db:"algorithms"     json:"algorithms,omitempty"      yaml:"algorithms"   gorm:"column:algorithms;type:jsonb;"`
+  DataSets     map[string]Data          `db:"datasets"       json:"datasets,omitempty"        yaml:"datasets"     gorm:"column:datasets;type:jsonb;"`
 }
 
 var memService = make(map[string]Service)
