@@ -8,12 +8,22 @@ import (
   "gopkg.in/yaml.v2"
 )
 
+type Algorithm struct {
+  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
+  Type         string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
+  Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"`
+}
+
 type Service struct {
-  CODE         string    `db:"code"           json:"code,omitempty"            yaml:"code"`
-  Type         string    `db:"type"           json:"type,omitempty"            yaml:"type"`
-  Name         string    `db:"name"           json:"name,omitempty"            yaml:"name"`
-  SystemCode   string    `db:"system_code"    json:"system_code,omitempty"     yaml:"system_code"`
-  Disabled     bool      `db:"disabled"       json:"disabled,omitempty"        yaml:"disabled"`
+  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
+  Type         string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
+  Version      string                   `db:"version"        json:"version,omitempty"         yaml:"version"`
+  Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"`
+  Description  string                   `db:"description"    json:"description,omitempty"     yaml:"description"`
+  SystemCode   string                   `db:"system_code"    json:"system_code,omitempty"     yaml:"system_code"`
+  Disabled     bool                     `db:"disabled"       json:"disabled,omitempty"        yaml:"disabled"`
+  Interfaces   map[string]Interface     `db:"interfaces"     json:"interfaces,omitempty"      yaml:"interfaces"   gorm:"column:interfaces;type:jsonb;"`
+  Algorithms   map[string]Algorithm     `db:"algorithms"     json:"algorithms,omitempty"      yaml:"algorithms"   gorm:"column:algorithms;type:jsonb;"`
 }
 
 var memService = make(map[string]Service)

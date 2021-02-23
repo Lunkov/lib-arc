@@ -1,0 +1,5 @@
+code: Redis
+type: inmem-db
+name: Redis
+iterfases:
+  

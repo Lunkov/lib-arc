@@ -1,0 +1,5 @@
+code: Aerospike
+type: inmem-db
+name: Aerospike
+iterfases:
+  
