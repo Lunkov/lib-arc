@@ -16,40 +16,50 @@ type CPU struct {
   Cores            int      `db:"cores"             json:"cores"            yaml:"cores"`
 }
 
-var memCPU = make(map[string]CPU)
-
-func CPUCount() int64 {
-  return int64(len(memCPU))
+type CPUSet struct {
+  a map[string]CPU
 }
 
-func CPUAppend(code string, info *CPU) {
-  memCPU[code] = *info
+var extCPU = ".cpu"
+
+func NewCPUs() *CPUSet {
+  return &CPUSet{
+                 a: make(map[string]CPU),
+               }
 }
 
-func GetCPUByCODE(code string) (*CPU) {
-  item, ok := memCPU[code]
+func (s *CPUSet) Count() int64 {
+  return int64(len(s.a))
+}
+
+func (s *CPUSet) Append(code string, info *CPU) {
+  s.a[code] = *info
+}
+
+func (s *CPUSet) GetByCODE(code string) (*CPU) {
+  item, ok := s.a[code]
   if ok {
     return &item
   }
   return nil
 }
 
-func GetCPUFactor(cpu1 string, cpu2 string) float32 {
-  item1, ok := memCPU[cpu1]
+func (s *CPUSet) GetFactor(cpu1 string, cpu2 string) float32 {
+  item1, ok := s.a[cpu1]
   if !ok {
     return 0
   }
-  item2, ok := memCPU[cpu2]
+  item2, ok := s.a[cpu2]
   if !ok {
     return 0
   }
   return item2.AverageCPUMark / item1.AverageCPUMark
 }
 
-func LoadCPUsFromFiles(scanPath string) int {
+func (s *CPUSet) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
-    if f != nil && f.IsDir() == false {
+    if f != nil && f.IsDir() == false && filepath.Ext(filename) == extCPU  {
       if glog.V(2) {
         glog.Infof("LOG: CPU file: %s", filename)
       }
@@ -58,7 +68,7 @@ func LoadCPUsFromFiles(scanPath string) int {
       if err != nil {
         glog.Errorf("ERR: ReadFile.CPU(%s)  #%v ", filename, err)
       } else {
-        count += fileCPUParse(filename, yamlFile)
+        count += s.fileParse(filename, yamlFile)
       }
     }
     return nil
@@ -73,7 +83,7 @@ func LoadCPUsFromFiles(scanPath string) int {
   return count
 }
 
-func fileCPUParse(filename string, yamlFile []byte) int {
+func (s *CPUSet) fileParse(filename string, yamlFile []byte) int {
   var err error
   oTmp := make(map[string]CPU)
 
@@ -85,7 +95,7 @@ func fileCPUParse(filename string, yamlFile []byte) int {
   
   for key, value := range oTmp {
     value.Name = key
-    memCPU[key] = value
+    s.a[key] = value
   }
 
   return len(oTmp)

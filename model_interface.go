@@ -39,8 +39,8 @@ type Interface struct {
   Description    string                   `db:"description"    json:"description"               yaml:"description"`
   Port           uint                     `db:"port"           json:"port,omitempty"            yaml:"port"`
   
-  Input          Data                     `db:"input"          json:"input,omitempty"           yaml:"input"          gorm:"column:input;type:jsonb;"`
-  Output         Data                     `db:"output"         json:"output,omitempty"          yaml:"output"         gorm:"column:output;type:jsonb;"`
+  Input          DataSet                  `db:"input"          json:"input,omitempty"           yaml:"input"          gorm:"column:input;type:jsonb;"`
+  Output         DataSet                  `db:"output"         json:"output,omitempty"          yaml:"output"         gorm:"column:output;type:jsonb;"`
 }
 
 func (b *Protocol) Zero()                    { (*b) = 0 }

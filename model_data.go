@@ -6,6 +6,7 @@ import (
   "path/filepath"
   "github.com/golang/glog"
   "gopkg.in/yaml.v2"
+  "sort"
 )
 
 // TypeOfData.
@@ -28,9 +29,10 @@ type Property struct {
   Name         string     `db:"name"           json:"name"            yaml:"name"`
   GlobalName   string     `db:"global_name"    json:"global_name"     yaml:"global_name"`
   Type         string     `db:"type"           json:"type"            yaml:"type"`
+  Order        int        `db:"order"          json:"order"           yaml:"order"`
 }
 
-type Data struct {
+type DataSet struct {
   CODE         string     `db:"code"           json:"code"            yaml:"code"`
   Type         string     `db:"type"           json:"type"            yaml:"type"`
   Name         string     `db:"name"           json:"name"            yaml:"name"`
@@ -39,25 +41,35 @@ type Data struct {
   Props      []Property   `db:"properties"     json:"properties"      yaml:"properties"`
 }
 
-var memData = make(map[string]Data)
-
-func DataCount() int64 {
-  return int64(len(memData))
+type DataSets struct {
+  a map[string]DataSet
 }
 
-func DataAppend(info *Data) {
-  memData[info.CODE] = *info
+func NewDataSets() *DataSets {
+  return &DataSets{
+                 a: make(map[string]DataSet),
+               }
 }
 
-func GetDataByCODE(code string) (*Data) {
-  item, ok := memData[code]
+func (s *DataSets) Count() int64 {
+  return int64(len(s.a))
+}
+
+func (s *DataSets) Append(info *DataSet) {
+  // Sorting by Order
+  sort.Slice(info.Props, func(i, j int) bool { return info.Props[i].Order < info.Props[j].Order })
+  s.a[info.CODE] = *info
+}
+
+func (s *DataSets) GetByCODE(code string) (*DataSet) {
+  item, ok := s.a[code]
   if ok {
     return &item
   }
   return nil
 }
 
-func LoadDataFromFiles(scanPath string) int {
+func (s *DataSets) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false {
@@ -69,7 +81,7 @@ func LoadDataFromFiles(scanPath string) int {
       if err != nil {
         glog.Errorf("ERR: ReadFile.Data(%s)  #%v ", filename, err)
       } else {
-        count += fileDataParse(filename, jsonFile)
+        count += s.fileParse(filename, jsonFile)
       }
     }
     return nil
@@ -84,16 +96,16 @@ func LoadDataFromFiles(scanPath string) int {
   return count
 }
 
-func fileDataParse(filename string, jsonFile []byte) int {
+func (s *DataSets) fileParse(filename string, jsonFile []byte) int {
   var err error
-  var oTmp Data
+  var oTmp DataSet
 
   err = yaml.Unmarshal(jsonFile, &oTmp)
   if err != nil {
     glog.Errorf("ERR: DataFile(%s): JSON: %v", filename, err)
     return 0
   }
-  DataAppend(&oTmp)
+  s.Append(&oTmp)
   return 1
 }
 

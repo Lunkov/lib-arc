@@ -12,7 +12,9 @@ func TestService(t *testing.T) {
   // flag.Set("v", "9")
   flag.Parse()
   
-  LoadServicesFromFiles("etc.test")
+  s := NewServices()
   
-  assert.Equal(t, int64(5), ServiceCount())
+  s.LoadFromFiles("etc.test")
+  
+  assert.Equal(t, int64(5), s.Count())
 }

@@ -43,23 +43,31 @@ type Swagger struct {
   Paths        map[string]SwaggerMethods       `db:"paths"       json:"paths"        yaml:"paths"`
 }
 
-var memSwagger = make(map[string]map[string]Swagger) // map[Title]map[Version]
-
-func SwaggerCount() int64 {
-  return int64(len(memSwagger))
+type SwaggerSet struct {
+  a map[string]map[string]Swagger // map[Title]map[Version]
 }
 
-func SwaggerAppend(info *Swagger) {
-  if _, ok := memSwagger[info.Info.Title]; !ok {
-    memSwagger[info.Info.Title] = make(map[string]Swagger)
+func NewSwaggerSet() *SwaggerSet {
+  return &SwaggerSet{
+                 a: make(map[string]map[string]Swagger),
+               }
+}
+
+func (s *SwaggerSet) Count() int64 {
+  return int64(len(s.a))
+}
+
+func (s *SwaggerSet) Append(info *Swagger) {
+  if _, ok := s.a[info.Info.Title]; !ok {
+    s.a[info.Info.Title] = make(map[string]Swagger)
   }
 
-  memSwagger[info.Info.Title][info.Info.Version] = (*info)
+  s.a[info.Info.Title][info.Info.Version] = (*info)
 }
 
-func GetSwaggers() []SwaggerInfo {
+func (s *SwaggerSet) GetList() []SwaggerInfo {
   res := make([]SwaggerInfo, 0)
-  for _, versions := range memSwagger {
+  for _, versions := range s.a {
     for _, value := range versions {
       res = append(res, value.Info)
     }
@@ -67,12 +75,12 @@ func GetSwaggers() []SwaggerInfo {
   return res
 }
 
-func GetSwaggerByTitle(code string, version string) (*Swagger) {
-  item, ok := memSwagger[code][version]
+func (s *SwaggerSet) GetByTitle(code string, version string) (*Swagger) {
+  item, ok := s.a[code][version]
   if ok {
     return &item
   }
-  itemT, ok0 := memSwagger[code]
+  itemT, ok0 := s.a[code]
   if ok0 {
     for _, item0 := range itemT {
       return &item0
@@ -81,7 +89,7 @@ func GetSwaggerByTitle(code string, version string) (*Swagger) {
   return nil
 }
 
-func LoadSwaggerFromFiles(scanPath string) int {
+func (s *SwaggerSet) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false {
@@ -93,7 +101,7 @@ func LoadSwaggerFromFiles(scanPath string) int {
       if err != nil {
         glog.Errorf("ERR: ReadFile.Swagger(%s)  #%v ", filename, err)
       } else {
-        count += fileSwaggerParse(filename, jsonFile)
+        count += s.fileParse(filename, jsonFile)
       }
     }
     return nil
@@ -108,7 +116,7 @@ func LoadSwaggerFromFiles(scanPath string) int {
   return count
 }
 
-func fileSwaggerParse(filename string, jsonFile []byte) int {
+func (s *SwaggerSet) fileParse(filename string, jsonFile []byte) int {
   var err error
   var swgTmp Swagger
 
@@ -116,7 +124,7 @@ func fileSwaggerParse(filename string, jsonFile []byte) int {
   if err != nil {
     glog.Errorf("ERR: swaggerFile(%s): JSON: %v", filename, err)
   }
-  SwaggerAppend(&swgTmp)
+  s.Append(&swgTmp)
 
   return 1
 }
