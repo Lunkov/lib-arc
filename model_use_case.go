@@ -79,6 +79,14 @@ func (s *UseCaseSet) GetByCODE(code string) (*UseCase) {
   return nil
 }
 
+func (s *UseCaseSet) GetList() []UseCase {
+  res := make([]UseCase, 0)
+  for _, item := range s.a {
+    res = append(res, item)
+  }
+  return res
+}
+
 func (s *UseCaseSet) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {

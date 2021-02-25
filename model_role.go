@@ -45,6 +45,14 @@ func (s *Roles) GetByCODE(code string) (*Role) {
   return nil
 }
 
+func (s *Roles) GetList() []Role {
+  res := make([]Role, 0)
+  for _, item := range s.a {
+    res = append(res, item)
+  }
+  return res
+}
+
 func (s *Roles) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {

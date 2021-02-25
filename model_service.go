@@ -61,6 +61,14 @@ func (s *Services) GetByCODE(code string) (*Service) {
   return nil
 }
 
+func (s *Services) GetList() []Service {
+  res := make([]Service, 0)
+  for _, item := range s.a {
+    res = append(res, item)
+  }
+  return res
+}
+
 func (s *Services) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
