@@ -30,8 +30,6 @@ type Service struct {
   DataSets     DataSets                 `db:"datasets"       json:"datasets,omitempty"        yaml:"datasets"     gorm:"column:datasets;type:jsonb;"`
 }
 
-var extService = ".service"
-
 type Services struct {
   a map[string]Service
 }
@@ -40,6 +38,10 @@ func NewServices() *Services {
   return &Services{
                  a: make(map[string]Service),
                }
+}
+
+func (s *Services) FileExtension() string {
+  return ".service"
 }
 
 func (s *Services) Count() int64 {
@@ -62,7 +64,7 @@ func (s *Services) GetByCODE(code string) (*Service) {
 func (s *Services) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
-    if f != nil && f.IsDir() == false && filepath.Ext(filename) == extService  {
+    if f != nil && f.IsDir() == false && filepath.Ext(filename) == s.FileExtension()  {
       if glog.V(2) {
         glog.Infof("LOG: Service file: %s", filename)
       }

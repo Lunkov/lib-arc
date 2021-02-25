@@ -20,12 +20,14 @@ type Stages struct {
   a map[string]Stage
 }
 
-var extStage = ".stage"
-
 func NewStages() *Stages {
   return &Stages{
                  a: make(map[string]Stage),
                }
+}
+
+func (s *Stages) FileExtension() string {
+  return ".stage"
 }
 
 func (s *Stages) Count() int64 {
@@ -63,10 +65,18 @@ func (s *Stages) GetPrevStage(code string) string {
   return ""
 }
 
+func (s *Stages) GetList() []Stage {
+  res := make([]Stage, 0)
+  for _, item := range s.a {
+    res = append(res, item)
+  }
+  return res
+}
+
 func (s *Stages) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
-    if f != nil && f.IsDir() == false && filepath.Ext(filename) == extStage  {
+    if f != nil && f.IsDir() == false && filepath.Ext(filename) == s.FileExtension()  {
       if glog.V(2) {
         glog.Infof("LOG: Stage file: %s", filename)
       }
@@ -97,6 +107,7 @@ func (s *Stages) fileParse(filename string, jsonFile []byte) int {
   err = yaml.Unmarshal(jsonFile, &oTmp)
   if err != nil {
     glog.Errorf("ERR: StageFile(%s): JSON: %v", filename, err)
+    return 0
   }
   s.Append(&oTmp)
   return 1

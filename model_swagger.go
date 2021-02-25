@@ -89,6 +89,10 @@ func (s *SwaggerSet) GetByTitle(code string, version string) (*Swagger) {
   return nil
 }
 
+func (s *SwaggerSet) AppendToService(service *Service, code string, version string) {
+  
+}
+
 func (s *SwaggerSet) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
