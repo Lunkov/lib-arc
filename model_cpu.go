@@ -2,6 +2,7 @@ package arc
 
 import (
   "os"
+  "sort"
   "io/ioutil"
   "path/filepath"
   "github.com/golang/glog"
@@ -16,8 +17,26 @@ type CPU struct {
   Cores            int      `db:"cores"             json:"cores"            yaml:"cores"`
 }
 
+type CPUSlice []*CPU
+
+// Len is part of sort.Interface.
+func (d CPUSlice) Len() int {
+  return len(d)
+}
+
+// Swap is part of sort.Interface.
+func (d CPUSlice) Swap(i, j int) {
+  d[i], d[j] = d[j], d[i]
+}
+
+// Less is part of sort.Interface. We use count as the value to sort by
+func (d CPUSlice) Less(i, j int) bool {
+  return d[i].Name < d[j].Name
+}
+
 type CPUSet struct {
-  a map[string]CPU
+  a      map[string]CPU
+  index  CPUSlice
 }
 
 var extCPU = ".cpu"
@@ -25,6 +44,7 @@ var extCPU = ".cpu"
 func NewCPUs() *CPUSet {
   return &CPUSet{
                  a: make(map[string]CPU),
+                 index: make(CPUSlice, 0, 0),
                }
 }
 
@@ -32,8 +52,14 @@ func (s *CPUSet) Count() int64 {
   return int64(len(s.a))
 }
 
-func (s *CPUSet) Append(code string, info *CPU) {
-  s.a[code] = *info
+func (s *CPUSet) Append(info CPU) {
+  _, ok := s.a[info.Name]
+  if ok {
+    glog.Warningf("WRN: CPU Exists: %s", info.Name)
+  }
+  s.a[info.Name] = info
+  s.index = append(s.index, &info)
+  sort.Sort(&s.index)
 }
 
 func (s *CPUSet) GetByCODE(code string) (*CPU) {
@@ -95,7 +121,7 @@ func (s *CPUSet) fileParse(filename string, yamlFile []byte) int {
   
   for key, value := range oTmp {
     value.Name = key
-    s.a[key] = value
+    s.Append(value)
   }
 
   return len(oTmp)

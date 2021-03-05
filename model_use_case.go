@@ -35,13 +35,11 @@ func (d useCaseSlice) Len() int {
 
 // Swap is part of sort.Interface.
 func (d useCaseSlice) Swap(i, j int) {
-  glog.Warningf("WRN: Use Case Swap: i=%d j=%d", i, j)
   d[i], d[j] = d[j], d[i]
 }
 
 // Less is part of sort.Interface. We use count as the value to sort by
 func (d useCaseSlice) Less(i, j int) bool {
-  glog.Warningf("WRN: Use Case Less: i=%d j=%d", i, j)
   return d[i].Date < d[j].Date
 }
 
