@@ -33,11 +33,11 @@ type SwaggerProperty struct {
 type SwaggerMethods map[string]SwaggerMethod
 
 type Swagger struct {
-  Name         string            `db:"swagger"     json:"swagger"         yaml:"swagger"`
-  Host         string            `db:"host"        json:"host"            yaml:"host"`
-  Info         SwaggerInfo       `db:"info"        json:"info"            yaml:"info"`
-  Servers      []SwaggerServers  `db:"servers"     json:"servers"         yaml:"servers"`
-  Schemes      []string          `db:"schemes"     json:"schemes"         yaml:"schemes"`
+  Name         string                          `db:"swagger"     json:"swagger"         yaml:"swagger"`
+  Host         string                          `db:"host"        json:"host"            yaml:"host"`
+  Info         SwaggerInfo                     `db:"info"        json:"info"            yaml:"info"`
+  Servers      []SwaggerServers                `db:"servers"     json:"servers"         yaml:"servers"`
+  Schemes      []string                        `db:"schemes"     json:"schemes"         yaml:"schemes"`
   Consumes     []string                        `db:"consumes"       json:"consumes"        yaml:"consumes"`
   Produces     []string                        `db:"produces"       json:"produces"        yaml:"produces"`
   Paths        map[string]SwaggerMethods       `db:"paths"       json:"paths"        yaml:"paths"`

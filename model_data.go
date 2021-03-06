@@ -26,6 +26,7 @@ var typesOfData = map[string]TypeOfData{
 
 type Property struct {
   CODE         string     `db:"code"           json:"code"            yaml:"code"`
+  ParentCODE   string     `db:"parent_code"    json:"parent_code"     yaml:"parent_code"`
   Name         string     `db:"name"           json:"name"            yaml:"name"`
   GlobalName   string     `db:"global_name"    json:"global_name"     yaml:"global_name"`
   Type         string     `db:"type"           json:"type"            yaml:"type"`
