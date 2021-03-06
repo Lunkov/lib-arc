@@ -14,6 +14,7 @@ type Algorithm struct {
   Type         string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
   Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"`
   Stage        string                   `db:"stage"          json:"stage,omitempty"           yaml:"stage"`
+  Interfaces []string                   `db:"interfaces"     json:"interfaces,omitempty"      yaml:"interfaces"`
 }
 
 type Service struct {
@@ -27,7 +28,6 @@ type Service struct {
   Disabled     bool                     `db:"disabled"       json:"disabled,omitempty"        yaml:"disabled"`
   Interfaces   []Interface              `db:"interfaces"     json:"interfaces,omitempty"      yaml:"interfaces"   gorm:"column:interfaces;type:jsonb;"`
   Algorithms   []Algorithm              `db:"algorithms"     json:"algorithms,omitempty"      yaml:"algorithms"   gorm:"column:algorithms;type:jsonb;"`
-  DataSets     DataSets                 `db:"datasets"       json:"datasets,omitempty"        yaml:"datasets"     gorm:"column:datasets;type:jsonb;"`
 }
 
 type Services struct {
