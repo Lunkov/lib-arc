@@ -16,12 +16,14 @@ const (
   TABLE TypeOfData = iota
   VIEW
   PARAMETER
+  ARRAY
 )
 
 var typesOfData = map[string]TypeOfData{
   "table":        TABLE,
   "view":         VIEW,
   "parameter":    PARAMETER,
+  "array":        ARRAY,
 }
 
 type Property struct {
@@ -34,7 +36,7 @@ type Property struct {
 }
 
 type DataSet struct {
-  CODE         string     `db:"code"           json:"code"            yaml:"code"`
+  CODE         string     `db:"code"           json:"code"            yaml:"code"                   unique:"true"`
   Type         string     `db:"type"           json:"type"            yaml:"type"`
   Name         string     `db:"name"           json:"name"            yaml:"name"`
   GlobalName   string     `db:"global_name"    json:"global_name"     yaml:"global_name"`
@@ -42,13 +44,18 @@ type DataSet struct {
   Props      []Property   `db:"properties"     json:"properties"      yaml:"properties"`
 }
 
+type DataSetSlice []*DataSet
+
 type DataSets struct {
-  a map[string]DataSet
+  a      map[string]DataSet
+  index  DataSetSlice
+
 }
 
 func NewDataSets() *DataSets {
   return &DataSets{
                  a: make(map[string]DataSet),
+                 index: make(DataSetSlice, 0, 0),
                }
 }
 
@@ -60,6 +67,7 @@ func (s *DataSets) Append(info *DataSet) {
   // Sorting by Order
   sort.Slice(info.Props, func(i, j int) bool { return info.Props[i].Order < info.Props[j].Order })
   s.a[info.CODE] = *info
+  s.index = append(s.index, info)
 }
 
 func (s *DataSets) GetByCODE(code string) (*DataSet) {

@@ -10,7 +10,7 @@ import (
 )
 
 type Algorithm struct {
-  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
+  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"             unique:"true"`
   Type         string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
   Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"`
   Stage        string                   `db:"stage"          json:"stage,omitempty"           yaml:"stage"`
@@ -18,7 +18,7 @@ type Algorithm struct {
 }
 
 type Service struct {
-  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
+  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"             unique:"true"`
   Type         string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
   Version      string                   `db:"version"        json:"version,omitempty"         yaml:"version"`
   Stage        string                   `db:"stage"          json:"stage,omitempty"           yaml:"stage"`

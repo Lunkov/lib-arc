@@ -10,7 +10,7 @@ import (
 )
 
 type CPU struct {
-  Name             string `db:"name"           json:"name"            yaml:"name"`
+  Name             string `db:"name"           json:"name"            yaml:"name"                         unique:"true"`
   
   AverageCPUMark   float32  `db:"average-cpu-mark"  json:"average-cpu-mark" yaml:"average-cpu-mark"`
   Threads          int      `db:"threads"           json:"threads"          yaml:"threads"`

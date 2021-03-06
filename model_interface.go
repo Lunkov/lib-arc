@@ -31,7 +31,7 @@ var protocols = map[string]Protocol{
 
 // Interface
 type Interface struct {
-  CODE           string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
+  CODE           string                   `db:"code"           json:"code,omitempty"            yaml:"code"             unique:"true"`
   Type           string                   `db:"type"           json:"type,omitempty"            yaml:"type"`
   Protocol       Protocol                 `db:"protocol"       json:"protocol,omitempty"        yaml:"protocol"`
   ProtocolTags []string                   `db:"protocol_tags"  json:"protocol_tags,omitempty"   yaml:"protocol_tags"`

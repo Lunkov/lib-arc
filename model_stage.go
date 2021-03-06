@@ -10,8 +10,8 @@ import (
 )
 
 type Stage struct {
-  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"`
-  Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"`
+  CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"                unique:"true"`
+  Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"                unique:"true"`
   NextStage    string                   `db:"next_stage"     json:"next_stage,omitempty"      yaml:"next_stage"`
   Description  string                   `db:"description"    json:"description,omitempty"     yaml:"description"`
 }
