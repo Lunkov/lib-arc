@@ -28,6 +28,7 @@ type Service struct {
   Disabled     bool                     `db:"disabled"       json:"disabled,omitempty"        yaml:"disabled"`
   Interfaces   []Interface              `db:"interfaces"     json:"interfaces,omitempty"      yaml:"interfaces"   gorm:"column:interfaces;type:jsonb;"`
   Algorithms   []Algorithm              `db:"algorithms"     json:"algorithms,omitempty"      yaml:"algorithms"   gorm:"column:algorithms;type:jsonb;"`
+  Data         DataSets                 `db:"datasets"       json:"datasets,omitempty"        yaml:"datasets"     gorm:"column:datasets;type:jsonb;"`
 }
 
 type Services struct {
