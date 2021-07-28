@@ -1,4 +1,4 @@
-package arc
+package project
 
 import (
   "os"

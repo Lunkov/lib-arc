@@ -1,4 +1,4 @@
-package arc
+package project
 
 import (
   "testing"
@@ -8,7 +8,7 @@ import (
 func TestStage(t *testing.T) {
   
   s := NewStages()
-  s.LoadFromFiles("etc.test")
+  s.LoadFromFiles("./../../etc.test")
   
   assert.Equal(t, int64(7), s.Count())
   assert.Equal(t, (*Stage)(nil), s.GetByCODE("stage1"))

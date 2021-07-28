@@ -1,4 +1,4 @@
-package arc
+package hardware
 
 import (
   "flag"
@@ -14,7 +14,7 @@ func TestCPU(t *testing.T) {
   
   c := NewCPUs()
   
-  c.LoadFromFiles("etc.test")
+  c.LoadFromFiles("./../../etc.test")
   
   assert.Nil(t, c.GetByCODE("cpu1"))
   assert.Equal(t, &CPU{Name:"Intel Core i5-4210U @ 1.70GHz", AverageCPUMark:2270, Threads:4, Cores:2}, c.GetByCODE("Intel Core i5-4210U @ 1.70GHz"))

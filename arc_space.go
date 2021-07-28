@@ -7,24 +7,36 @@ import (
   "path/filepath"
   "github.com/golang/glog"
   "github.com/radovskyb/watcher"
+  
+  "github.com/Lunkov/lib-arc/m/project"
+  "github.com/Lunkov/lib-arc/m/hardware"
+  "github.com/Lunkov/lib-arc/m/software"
 )
 
 type Space struct {
   scanPath        string
   watcherFiles    *watcher.Watcher
-  CPU             *CPUSet
-  Roles           *Roles
-  Stages          *Stages
-  Services        *Services
+  
+  Roles           *project.Roles
+  Projects        *project.Projects
+  Stages          *project.Stages
+  
+  Services        *software.Services
+  Pages           *software.Pages
+  Widgets         *software.Widgets
+  
+  CPU             *hardware.CPUSet
+  
 }
 
 func NewSpace(scanPath string, enableWatcher bool) *Space {
   s := &Space{}
   s.scanPath = scanPath
-  s.CPU      = NewCPUs()
-  s.Roles    = NewRoles()
-  s.Stages   = NewStages()
-  s.Services = NewServices()
+  s.CPU      = hardware.NewCPUs()
+  s.Projects = project.NewProjects()
+  s.Roles    = project.NewRoles()
+  s.Stages   = project.NewStages()
+  s.Services = software.NewServices()
   if enableWatcher {
     s.initWatcher()
   }
@@ -86,10 +98,10 @@ func (s *Space) LoadFromFiles() int {
       } else {
         switch ext {
           case s.Services.FileExtension():
-                 count += s.Services.fileParse(filename, jsonFile)
+                 count += s.Services.FileParse(filename, jsonFile)
                  break
           case s.Stages.FileExtension():
-                 count += s.Stages.fileParse(filename, jsonFile)
+                 count += s.Stages.FileParse(filename, jsonFile)
                  break
         }
       }

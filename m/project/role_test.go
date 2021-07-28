@@ -1,4 +1,4 @@
-package arc
+package project
 
 import (
   "testing"
@@ -8,7 +8,7 @@ import (
 func TestRole(t *testing.T) {
 
   s := NewRoles()
-  s.LoadFromFiles("etc.test")
+  s.LoadFromFiles("./../../etc.test")
 
   assert.Equal(t, int64(2), s.Count())
   assert.Equal(t, (*Role)(nil), s.GetByCODE("admin1"))

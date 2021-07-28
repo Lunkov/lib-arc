@@ -13,7 +13,7 @@ func TestSwagger(t *testing.T) {
   flag.Parse()
 
   s := NewSwaggerSet()
-  s.LoadFromFiles("etc.test/swagger")
+  s.LoadFromFiles("./../../etc.test/swagger")
 
   assert.Equal(t, int64(1), s.Count())
   assert.Equal(t, []SwaggerInfo{SwaggerInfo{Title:"Swagger Petstore", Version:"1.0.5", Description:"This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters."}}, s.GetList())

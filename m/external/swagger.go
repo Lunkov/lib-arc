@@ -6,6 +6,8 @@ import (
   "path/filepath"
   "github.com/golang/glog"
   "encoding/json"
+  
+  "github.com/Lunkov/lib-arc/m/software"
 )
 
 type SwaggerServers struct {
@@ -27,7 +29,7 @@ type SwaggerMethod struct {
 type SwaggerProperty struct {
   Type         string    `db:"type"           json:"type"            yaml:"type"`
   Format       string    `db:"format"         json:"format"          yaml:"format"`
-  Description   string   `db:"description"    json:"description"     yaml:"description"`
+  Description  string    `db:"description"    json:"description"     yaml:"description"`
 }
 
 type SwaggerMethods map[string]SwaggerMethod
@@ -89,7 +91,7 @@ func (s *SwaggerSet) GetByTitle(code string, version string) (*Swagger) {
   return nil
 }
 
-func (s *SwaggerSet) AppendToService(service *Service, code string, version string) {
+func (s *SwaggerSet) AppendToService(service *software.Service, code string, version string) {
   
 }
 

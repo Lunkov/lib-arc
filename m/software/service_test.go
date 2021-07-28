@@ -1,4 +1,4 @@
-package arc
+package software
 
 import (
   "flag"
@@ -14,7 +14,7 @@ func TestService(t *testing.T) {
   
   s := NewServices()
   
-  s.LoadFromFiles("etc.test")
+  s.LoadFromFiles("./../../etc.test")
   
   assert.Equal(t, int64(5), s.Count())
 }

@@ -1,4 +1,4 @@
-package arc
+package project
 
 import (
   "strings"
@@ -9,38 +9,40 @@ import (
   "gopkg.in/yaml.v2"
 )
 
-type Stage struct {
+type Task struct {
   CODE         string                   `db:"code"           json:"code,omitempty"            yaml:"code"                unique:"true"`
   Name         string                   `db:"name"           json:"name,omitempty"            yaml:"name"                unique:"true"`
-  NextStage    string                   `db:"next_stage"     json:"next_stage,omitempty"      yaml:"next_stage"`
+  ParentTask   string                   `db:"parent_task"    json:"parent_task,omitempty"     yaml:"parent_task"`
+  NextTask     string                   `db:"next_task"      json:"next_task,omitempty"       yaml:"next_task"`
   Description  string                   `db:"description"    json:"description,omitempty"     yaml:"description"`
+  SystemCODE   string                   `db:"system_code"    json:"system_code,omitempty"     yaml:"system_code"`
 }
 
-type Stages struct {
-  a map[string]Stage
+type Tasks struct {
+  a map[string]Task
 }
 
-func NewStages() *Stages {
-  return &Stages{
-                 a: make(map[string]Stage),
+func NewTasks() *Tasks {
+  return &Tasks{
+                 a: make(map[string]Task),
                }
 }
 
-func (s *Stages) FileExtension() string {
-  return ".stage"
+func (s *Tasks) FileExtension() string {
+  return ".task"
 }
 
-func (s *Stages) Count() int64 {
+func (s *Tasks) Count() int64 {
   return int64(len(s.a))
 }
 
-func (s *Stages) Append(info *Stage) {
+func (s *Tasks) Append(info *Task) {
   info.CODE = strings.ToLower(info.CODE)
-  info.NextStage = strings.ToLower(info.NextStage)
+  info.NextTask = strings.ToLower(info.NextTask)
   s.a[info.CODE] = *info
 }
 
-func (s *Stages) GetByCODE(code string) (*Stage) {
+func (s *Tasks) GetByCODE(code string) (*Task) {
   item, ok := s.a[code]
   if ok {
     return &item
@@ -48,42 +50,42 @@ func (s *Stages) GetByCODE(code string) (*Stage) {
   return nil
 }
 
-func (s *Stages) GetNextStage(code string) string {
+func (s *Tasks) GetNextTask(code string) string {
   item, ok := s.a[code]
   if ok {
-    return item.NextStage
+    return item.NextTask
   }
   return ""
 }
 
-func (s *Stages) GetPrevStage(code string) string {
+func (s *Tasks) GetPrevTask(code string) string {
   for _, s := range s.a {
-    if s.NextStage == code {
+    if s.NextTask == code {
       return s.CODE
     }
   }
   return ""
 }
 
-func (s *Stages) GetList() []Stage {
-  res := make([]Stage, 0)
+func (s *Tasks) GetList() []Task {
+  res := make([]Task, 0)
   for _, item := range s.a {
     res = append(res, item)
   }
   return res
 }
 
-func (s *Stages) LoadFromFiles(scanPath string) int {
+func (s *Tasks) LoadFromFiles(scanPath string) int {
   count := 0
   errScan := filepath.Walk(scanPath, func(filename string, f os.FileInfo, err error) error {
     if f != nil && f.IsDir() == false && filepath.Ext(filename) == s.FileExtension()  {
       if glog.V(2) {
-        glog.Infof("LOG: Stage file: %s", filename)
+        glog.Infof("LOG: Task file: %s", filename)
       }
       var err error
       jsonFile, err := ioutil.ReadFile(filename)
       if err != nil {
-        glog.Errorf("ERR: ReadFile.Stage(%s)  #%v ", filename, err)
+        glog.Errorf("ERR: ReadFile.Task(%s)  #%v ", filename, err)
       } else {
         count += s.fileParse(filename, jsonFile)
       }
@@ -91,7 +93,7 @@ func (s *Stages) LoadFromFiles(scanPath string) int {
     return nil
   })
   if glog.V(2) {
-    glog.Infof("LOG: Scan Path: %s, Stages: %d\n", scanPath, count)
+    glog.Infof("LOG: Scan Path: %s, Tasks: %d\n", scanPath, count)
   }
   if errScan != nil {
     glog.Errorf("ERR: ScanPath(%s): %s", scanPath, errScan)
@@ -100,13 +102,13 @@ func (s *Stages) LoadFromFiles(scanPath string) int {
   return count
 }
 
-func (s *Stages) fileParse(filename string, jsonFile []byte) int {
+func (s *Tasks) fileParse(filename string, jsonFile []byte) int {
   var err error
-  var oTmp Stage
+  var oTmp Task
 
   err = yaml.Unmarshal(jsonFile, &oTmp)
   if err != nil {
-    glog.Errorf("ERR: StageFile(%s): JSON: %v", filename, err)
+    glog.Errorf("ERR: TaskFile(%s): JSON: %v", filename, err)
     return 0
   }
   s.Append(&oTmp)

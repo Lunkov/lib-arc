@@ -1,4 +1,4 @@
-package arc
+package hardware
 
 import (
   "os"
@@ -10,7 +10,8 @@ import (
 )
 
 type CPU struct {
-  Name             string `db:"name"           json:"name"            yaml:"name"                         unique:"true"`
+  Name             string   `db:"name"           json:"name"            yaml:"name"                         unique:"true"`
+  Vendor           string   `db:"vendor"         json:"vendor"          yaml:"vendor"                       unique:"vendor"`
   
   AverageCPUMark   float32  `db:"average-cpu-mark"  json:"average-cpu-mark" yaml:"average-cpu-mark"`
   Threads          int      `db:"threads"           json:"threads"          yaml:"threads"`

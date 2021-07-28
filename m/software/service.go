@@ -1,4 +1,4 @@
-package arc
+package software
 
 import (
   "strings"
@@ -7,6 +7,11 @@ import (
   "path/filepath"
   "github.com/golang/glog"
   "gopkg.in/yaml.v2"
+
+  "github.com/graphql-go/graphql"
+  "github.com/SonicRoshan/straf"
+
+  "github.com/Lunkov/lib-arc/gql"
 )
 
 type Algorithm struct {
@@ -82,7 +87,7 @@ func (s *Services) LoadFromFiles(scanPath string) int {
       if err != nil {
         glog.Errorf("ERR: ReadFile.Service(%s)  #%v ", filename, err)
       } else {
-        count += s.fileParse(filename, jsonFile)
+        count += s.FileParse(filename, jsonFile)
       }
     }
     return nil
@@ -97,7 +102,7 @@ func (s *Services) LoadFromFiles(scanPath string) int {
   return count
 }
 
-func (s *Services) fileParse(filename string, jsonFile []byte) int {
+func (s *Services) FileParse(filename string, jsonFile []byte) int {
   var err error
   var oTmp Service
 
@@ -114,4 +119,33 @@ func (s *Services) fileParse(filename string, jsonFile []byte) int {
 }
 
 func ExportInterfacesFromSwagger() {
+}
+
+
+func (s *Services) InitGQL(g *gql.GQL) {
+  ServiceType, err := straf.GetGraphQLObject(Service{})
+  if err != nil {
+    glog.Errorf("ERR: ServiceGQL: %s", err)
+  }
+
+  g.AppendFields("service", &graphql.Field{
+			Type: ServiceType,
+      Args: graphql.FieldConfigArgument{
+                "code": &graphql.ArgumentConfig{
+                           Description: "code of the Service",
+                           Type: graphql.NewNonNull(graphql.String),
+                },
+              },
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+        id := p.Args["code"].(string)
+				return s.GetByCODE(id), nil
+			},
+		})
+    
+	g.AppendFields("services", &graphql.Field{
+			Type: graphql.NewList(ServiceType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				return s.GetList(), nil
+			},
+    })
 }

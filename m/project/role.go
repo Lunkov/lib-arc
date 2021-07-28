@@ -1,4 +1,4 @@
-package arc
+package project
 
 import (
   "strings"
@@ -7,6 +7,11 @@ import (
   "path/filepath"
   "github.com/golang/glog"
   "gopkg.in/yaml.v2"
+  
+  "github.com/graphql-go/graphql"
+  "github.com/SonicRoshan/straf"
+
+  "github.com/Lunkov/lib-arc/gql"
 )
 
 type Role struct {
@@ -90,4 +95,32 @@ func (s *Roles) fileParse(filename string, jsonFile []byte) int {
   }
   s.Append(&oTmp)
   return 1
+}
+
+func (s *Roles) InitGQL(g *gql.GQL) {
+  RoleType, err := straf.GetGraphQLObject(Role{})
+  if err != nil {
+    glog.Errorf("ERR: RoleGQL: %s", err)
+  }
+  
+  g.AppendFields("role", &graphql.Field{
+			Type: RoleType,
+      Args: graphql.FieldConfigArgument{
+                "code": &graphql.ArgumentConfig{
+                  Description: "code of the Role",
+                  Type:graphql.NewNonNull(graphql.String),
+                },
+              },
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+        id := p.Args["code"].(string)
+				return s.GetByCODE(id), nil
+			},
+		})
+    
+	g.AppendFields("roles", &graphql.Field{
+			Type: graphql.NewList(RoleType),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				return s.GetList(), nil
+			},
+    })
 }
